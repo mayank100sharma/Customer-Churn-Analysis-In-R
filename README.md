@@ -1,6 +1,5 @@
 # Customer-Churn-Analysis
 
-
 Methodology
 
 In this project, we are performing Logistic Regression, Decision Tree algorithm and the Random Tree algorithm on the Telecom Dataset to predict the customer churn in the recent future. The first step would be to load the dataset and storing it in a vector. The dataset cleaning would be done after loading the dataset. The dataset would then be divided into the training and the test dataset which is a basic method to perform analysis on a dataset. Logistic regression technique would be applied on the train data and create the model. Then this model will be compared with the raw test data to predict the outcome. The next step would be applying the Decision Tree algorithm to take the decision of customer churn condition. After applying the Decision Tree, we will perform Random forest method which searches the random characteristics of the customers at the same time and obtain the best fit outcome for the customer churn situation. After performing all the three models, the final accuracy among all the three will be compared on the basis of the accuracy rate.
@@ -8,49 +7,49 @@ In this project, we are performing Logistic Regression, Decision Tree algorithm 
 Project Analysis
 
 First of all, we need some packages to be loaded for our project. The packages are as follows:
-“plyr”, “ggplot2”, “caret”, “randomForest” and “party”. We can load these packages using “library()” command.
+â€œplyrâ€, â€œggplot2â€, â€œcaretâ€, â€œrandomForestâ€ and â€œpartyâ€. We can load these packages using â€œlibrary()â€ command.
 Importing the dataset
 To perform Logistic Regression, Decision Tree, and Random Forest, we are going to use telecom dataset. 
-We use “read.csv” to import the .csv file into the data frame we created called as “Telco”.
+We use â€œread.csvâ€ to import the .csv file into the data frame we created called as â€œTelcoâ€.
 Exploring the Dataset
-The “str” function gives the structure of the data. As seen above, there are 7043 observations (rows) and 21 variables (columns). We are going to predict customer churn, the “Churn” variable is our target variable. All the other variables will be used as object variables in our three models.
+The â€œstrâ€ function gives the structure of the data. As seen above, there are 7043 observations (rows) and 21 variables (columns). We are going to predict customer churn, the â€œChurnâ€ variable is our target variable. All the other variables will be used as object variables in our three models.
 Cleaning the dataset
 Data cleaning starts with dealing with the missing values.
-The “sapply” function is used to find out the missing values in columns. After applying “sapply” function on “Telco”, we found out 11 missing values in “TotalCharges” column. We need to remove these missing values as it affects the efficiency of our models.
-We also need to remove those variables as well which we do not need for the analysis, like “customerID”.
+The â€œsapplyâ€ function is used to find out the missing values in columns. After applying â€œsapplyâ€ function on â€œTelcoâ€, we found out 11 missing values in â€œTotalChargesâ€ column. We need to remove these missing values as it affects the efficiency of our models.
+We also need to remove those variables as well which we do not need for the analysis, like â€œcustomerIDâ€.
 Logistic Regression
-To fit the model into the dataset, first we need split our data into two parts. “train” set and “test” set. The “train” set consist of 70% of the “Telco” dataset and “test” set consist of 30%.
-To split the dataset, we use “createDataPartition” function, and kept 70% of the Churn variable data in a vector “trn”.
+To fit the model into the dataset, first we need split our data into two parts. â€œtrainâ€ set and â€œtestâ€ set. The â€œtrainâ€ set consist of 70% of the â€œTelcoâ€ dataset and â€œtestâ€ set consist of 30%.
+To split the dataset, we use â€œcreateDataPartitionâ€ function, and kept 70% of the Churn variable data in a vector â€œtrnâ€.
 Fitting the model
-The next step is to fit the logistic regression model into our data. For this we use “glm” function.
-“glm” function is used to generalize linear models, specified by giving a symbolic description of the linear predictor and a description of the error distribution.
-After that we use “anova()” function to compare nested models. ANOVA is a statistical technique for investigating the data by comparing the means of the subsets of the data.
-After analyzing the deviance table, we can see the drop-in deviance hen adding each variable one at a time. Adding “InternetService”, “Contract” and “Tenure” variables significantly reduces the residual deviance.
+The next step is to fit the logistic regression model into our data. For this we use â€œglmâ€ function.
+â€œglmâ€ function is used to generalize linear models, specified by giving a symbolic description of the linear predictor and a description of the error distribution.
+After that we use â€œanova()â€ function to compare nested models. ANOVA is a statistical technique for investigating the data by comparing the means of the subsets of the data.
+After analyzing the deviance table, we can see the drop-in deviance hen adding each variable one at a time. Adding â€œInternetServiceâ€, â€œContractâ€ and â€œTenureâ€ variables significantly reduces the residual deviance.
 After that we need to evaluate the Logistic Regression Model predictive ability, it gives the accuracy of our Logistic Regression model, which comes out to be 0.7998. 
 We use confusion matrix which calculates a cross-tabulation of observed and predicted classes with associated statistics. The function requires that the factors have exactly the same levels.
 Decision Tree
 After fitting the Logistic Regression Model, now we visualize the data using Decision Tree Model.
-To visualize in a better way, we will use 3 variables “Contract”, “tenure” and “PaperlessBilling”.
-We created a decision tree using a “ctree” function. The following is the decision tree visualization of dependent variable Churn and independent variables “Contract”, “tenure” and “PaperlessBilling”.
+To visualize in a better way, we will use 3 variables â€œContractâ€, â€œtenureâ€ and â€œPaperlessBillingâ€.
+We created a decision tree using a â€œctreeâ€ function. The following is the decision tree visualization of dependent variable Churn and independent variables â€œContractâ€, â€œtenureâ€ and â€œPaperlessBillingâ€.
 
 From the three independent variables we used in decision tree modeling, Contract comes out to be the most important variable to predict customer churn or not churn.
 After analyzing the decision tree model, if any customer is in a one-year long contract and not using the PaperlessBilling, then this particular customer is unlikely to churn.
 Apart from this, if any customer is in a month-to-month contract, and comes under the 0-12 month tenure, plus also using PaperlessBilling, then this customer is more likely to churn.
 We are using the same decision tree model to create confusion matrix table and use it to make prediction. 
 Now, we need to check the accuracy of our decision tree model, and which comes out be 0.7604.
-The accuracy level is hardly improved. Let’s use Random Forest to check if we can do better or not.
+The accuracy level is hardly improved. Letâ€™s use Random Forest to check if we can do better or not.
 Random Forest
-“randomForest” function is used to create Random Forest Model.
-The error rate is relatively low when predicting “No”, that means the prediction is pretty good when predicting “no”.
-And the error rate is much higher when predicting “Yes”, that means the prediction is not good when predicting “Yes”.
-Confusion Matrix requires the factors to have exactly the levels, for this we are converting “0” and “1” to “No” and “Yes” respectively.
+â€œrandomForestâ€ function is used to create Random Forest Model.
+The error rate is relatively low when predicting â€œNoâ€, that means the prediction is pretty good when predicting â€œnoâ€.
+And the error rate is much higher when predicting â€œYesâ€, that means the prediction is not good when predicting â€œYesâ€.
+Confusion Matrix requires the factors to have exactly the levels, for this we are converting â€œ0â€ and â€œ1â€ to â€œNoâ€ and â€œYesâ€ respectively.
 Random Forest Error Rate
  
 We plot our Random Forest Model, to determine the number of trees. The OOB error rate decreases as the number of trees increases. And then becomes almost constant. After 100 to 200 trees, we cannot able to decrease the OOB error rate.
 
 Tune the Random Forest model to check the OOB error rate
 
-We used “tuneRF” function to tune the Random Forest Model, after plotting the tuning Random Forest model, we can easily say that as the “mtry” increases, the OOB error rate decreases. 
+We used â€œtuneRFâ€ function to tune the Random Forest Model, after plotting the tuning Random Forest model, we can easily say that as the â€œmtryâ€ increases, the OOB error rate decreases. 
 Fitting the Random Forest Model again after tuning
 The OOB Error Rate decreases to 19.7% from 20.11%.
 Making predictions and confusion matrix again after tuning
@@ -61,15 +60,3 @@ Conclusion
 The variables like the Tenure, Contract and PaperlessBilling are the important decision-making factor for the customer churn situation. Customers who are in a month-to-month contract, with PaperlessBilling and within 0-12 month tenure, are more likely to churn. Apart from this, customers who are in more than one-year contract and not using PaperlessBilling are unlikely to churn.
 Fitting all the three models gives us the accuracy rate for each model. The accuracy rate of Logistic Regression Model is 79.98%, the accuracy rate of Random Forest before tuning comes out to be 79.36% and after we tune the Random Forest Model, the accuracy rate marginally increases to 79.74%. The accuracy rate for Decision Tree in all the three models comes out to be the lowest, i.e., 76.04%.
 To conclude, we can say that the Logistic Regression and the Random Forest have provided better results and gives the better accuracy rate than the Decision Tree for the problem of predicting the Customer Churn in the future.
-
-
-
-
-
-
-References:
-[1.] Statistics Solutions, What is Logistic Regression? http://www.statisticssolutions.com/what-is-logistic-regression/
-[2.] Medcalc, (2018), Logistic Regression https://www.medcalc.org/manual/logistic_regression.php
-[3.] Stat 504, (2018), Lesson 6: Logistic Regression https://onlinecourses.science.psu.edu/stat504/node/149/
-[4.] Prashant Gupta (17th May, 2017) Decision Trees in Machine Learning https://towardsdatascience.com/decision-trees-in-machine-learning-641b9c4e8052
-[5.] Niklas Denges (22nd Feb 2016) The Random Forest Algorithm https://towardsdatascience.com/the-random-forest-algorithm-d457d499ffcd
