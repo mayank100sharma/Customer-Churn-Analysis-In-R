@@ -1,0 +1,234 @@
+---
+title: "Prediction of customer churn situation"
+author: "Mayank Sharma"
+date: "6/30/2018"
+output: html_document
+---
+
+---
+title: "Telecomm Customer"
+output: html_document
+Group Members: Abhinav Wasnik, Mayank Sharma
+---
+
+#Installing and loading the package
+```{r}
+
+
+library(plyr)
+
+library(ggplot2)
+
+library(caret)
+
+library(randomForest)
+
+library(party)
+
+```
+
+#Reading the dataset file and checking the structure using str()
+```{r}
+
+Telco <- read.csv("Telco-Customer-Churn.csv")
+
+str(Telco)
+
+```
+
+#Check the number of missing values in each column
+```{r}
+
+sapply(Telco, function(x) sum(is.na(x)))
+
+```
+
+```{r}
+
+Telco <- Telco[complete.cases(Telco), ]
+
+```
+
+#Removing the columns we do not require
+```{r}
+
+Telco$customerID <- NULL
+
+```
+
+#### Logistic Regression ####
+
+#We will split the dataset into Train and Test dataset
+```{r}
+
+trn<- createDataPartition(Telco$Churn,p=0.7,list=FALSE)
+
+set.seed(2017)
+
+train<- Telco[trn,]
+
+test<- Telco[-trn,]
+
+```
+
+#Now, we will try to fit the model within the glm() for logistic regression
+```{r}
+
+L_Model <- glm(Churn ~ .,family=binomial(link="logit"),data=train)
+
+print(summary(L_Model))
+
+```
+
+#Analyzing the model further on few more features
+```{r}
+
+anova(L_Model, test="Chisq")
+
+```
+
+
+#Now we will evaluate the predictive ability  of the model
+```{r}
+
+test$Churn <- as.character(test$Churn)
+
+test$Churn[test$Churn=="No"] <- "0"
+
+test$Churn[test$Churn=="Yes"] <- "1"
+
+FitResult <- predict(L_Model,newdata=test,type='response')
+
+FitResult <- ifelse(FitResult > 0.5,1,0)
+
+MisClassificationError <- mean(FitResult != test$Churn)
+
+print(paste('Accuracy of Logistic Regression',1-MisClassificationError))
+
+```
+
+#Lets make a confusion matrix for the logistic regression performed above
+```{r}
+
+print("Logistic Regression Confusion Matrix"); table(test$Churn, FitResult > 0.5)
+
+```
+
+#### Decision Tree ####
+
+#Creating a decision tree
+```{r}
+
+tree <- ctree(Churn~Contract+tenure+PaperlessBilling, train)
+
+```
+
+#Plotting the decision tree created above
+```{r}
+
+plot(tree, type='simple')
+
+```
+
+#Predicting the result and making a confusion matrix for decision tree
+```{r}
+
+pred_tree <- predict(tree, test)
+
+print("Decision Tree Confusion Matrix"); table(Predicted = pred_tree, Actual = test$Churn)
+
+```
+
+#Checking the accuracy of the decision tree
+```{r}
+
+pred1 <- predict(tree, train)
+
+table1 <- table(Predicted = pred1, Actual = train$Churn)
+
+table2 <- table(Predicted = pred_tree, Actual = test$Churn)
+
+```
+
+#Printing the accuracy result
+```{r}
+
+print(paste('Accuracy of Decision Tree', sum(diag(table2))/sum(table2)))
+
+```
+
+#### Random Forest ####
+
+#Creating the initial model of Random forest
+```{r}
+
+set.seed(2017)
+
+Model_RF <- randomForest(Churn ~., data = train)
+
+print(Model_RF)
+
+```
+
+#Converting the 0 and 1 values to No and Yes respectively
+```{r}
+
+test$Churn <- as.character(test$Churn)
+
+test$Churn[test$Churn=="0"] <- "No"
+
+test$Churn[test$Churn=="1"] <- "Yes"
+
+```
+
+#Preforming prediction and confusion matrix
+```{r}
+
+Pred_RF <- predict(Model_RF, test)
+
+#Pred_RF
+
+#test$Churn
+
+caret::confusionMatrix(Pred_RF, test$Churn)
+
+```
+
+#Finding the error rate for Random Forest model
+```{r}
+
+plot(Model_RF)
+
+```
+
+#Tuning the model
+```{r}
+
+t <- tuneRF(train[, -18], train[, 18], stepFactor = 0.5, plot = TRUE, ntreeTry = 200, trace = TRUE, improve = 0.05)
+
+```
+
+#Again fitting the random forest model
+```{r}
+
+Model_RF_new <- randomForest(Churn ~., data = train, ntree = 200, mtry = 2, importance = TRUE, proximity = TRUE)
+
+print(Model_RF_new)
+
+```
+
+#Perform prediction and confusion matrix
+```{r}
+
+Pred_RF_new <- predict(Model_RF_new, test)
+
+caret::confusionMatrix(Pred_RF_new, test$Churn)
+
+```
+
+#Checking the importance of features of random forest
+```{r}
+
+varImpPlot(Model_RF_new, sort=T, n.var = 10, main = 'Top 10 Feature Importance')
+
+```
